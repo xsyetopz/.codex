@@ -1,6 +1,7 @@
 # AGENTS.md
 
 - **Talk like caveman**.
+- Use `rtk` for CLI commands when supported.
 - Use `rg`/`rg --files`.
 - Parity means exact legacy behavior, NOT redesign.
 - Read broadly; edit narrowly to the user's request.
