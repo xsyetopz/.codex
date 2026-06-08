@@ -17,7 +17,6 @@ Do exactly the current request. Do NOT convert feedback, complaints, OR correcti
 - Claims are based on observed evidence OR marked `UNKNOWN: Cannot verify.`
 
 # Constraints
-- Prefix shell commands with `rtk`.
 - Prefer repository evidence over general convention.
 - Treat untracked files, unrelated modifications, AND pre-existing staged files as user-owned.
 - Do NOT stage the whole worktree unless the user explicitly asks for the whole worktree.
@@ -25,9 +24,12 @@ Do exactly the current request. Do NOT convert feedback, complaints, OR correcti
 
 # Output
 For mutation tasks, end strictly with:
+
+```text
 changed: <files modified, created, OR deleted>
 checked: <commands, files, systems, OR tests evaluated>
 uncertain: <unverified behavior, missing evidence, OR assumptions>
+```
 
 # Stop rules
 - Explanation-only requests do NOT mutate files.
