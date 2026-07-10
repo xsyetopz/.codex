@@ -1,0 +1,234 @@
+# ~/.codex/rules/default.rules
+# The strictest matching decision wins: forbidden > prompt > allow.
+
+def rule(pattern, decision, why, match = [], not_match = []):
+    prefix_rule(
+        pattern = pattern,
+        decision = decision,
+        justification = why,
+        match = match,
+        not_match = not_match,
+    )
+
+def allow(pattern, why = "Routine local command is approved.", match = [], not_match = []):
+    rule(pattern, "allow", why, match, not_match)
+
+def prompt(pattern, why, match = [], not_match = []):
+    rule(pattern, "prompt", why, match, not_match)
+
+def forbid(pattern, why, match = [], not_match = []):
+    rule(pattern, "forbidden", why, match, not_match)
+
+# Read-only discovery and inspection.
+allow(["rg"], "Repository text search is approved.", match = ["rg TODO src"], not_match = ["grep TODO src"])
+allow(["fd"], "Repository path search is approved.")
+allow(["find"], "Filesystem path search is approved.")
+allow(["ls"], "Directory inspection is approved.")
+allow(["pwd"], "Working-directory inspection is approved.")
+allow(["cat"], "File inspection is approved.")
+allow(["head"], "File inspection is approved.")
+allow(["tail"], "File inspection is approved.")
+allow(["jq"], "Structured JSON inspection is approved.")
+allow(["sed", "-n"], "Non-mutating line inspection is approved.")
+allow(["wc"], "File and stream counting is approved.")
+allow(["sort"], "Stream sorting is approved.")
+allow(["uniq"], "Stream deduplication is approved.")
+allow(["cut"], "Stream field selection is approved.")
+allow(["tr"], "Stream character translation is approved.")
+allow(["diff"], "File comparison is approved.")
+allow(["cmp"], "Binary comparison is approved.")
+allow(["file"], "File-type inspection is approved.")
+allow(["stat"], "Filesystem metadata inspection is approved.")
+allow(["du"], "Disk-usage inspection is approved.")
+allow(["df"], "Filesystem-capacity inspection is approved.")
+allow(["shasum"], "Checksum calculation is approved.")
+allow(["md5"], "Checksum calculation is approved.")
+allow(["date"], "Clock inspection is approved.")
+allow(["uname"], "Platform inspection is approved.")
+allow(["whoami"], "Current-user inspection is approved.")
+allow(["id"], "Identity inspection is approved.")
+allow(["which"], "Executable lookup is approved.")
+allow(["ps"], "Process inspection is approved.")
+allow(["pgrep"], "Process lookup is approved.")
+allow(["lsof"], "Open-file and port inspection is approved.")
+allow(["printf"], "Direct stdout formatting is approved.")
+allow(["echo"], "Direct stdout formatting is approved.")
+
+# In-scope local file creation. Destructive or relocating operations prompt below.
+allow(["cp"], "In-scope local file copying is approved.")
+allow(["mkdir"], "In-scope local directory creation is approved.")
+allow(["touch"], "In-scope local file creation is approved.")
+prompt(["mv"], "Moving or overwriting a path requires current user approval.")
+prompt(["rm"], "Deleting a path requires current user approval.")
+prompt(["rmdir"], "Deleting a directory requires current user approval.")
+prompt(["ln"], "Creating a link can cross trust boundaries; current user approval is required.")
+prompt(["truncate"], "Truncating a file destroys content; current user approval is required.")
+prompt(["rsync"], "Rsync can overwrite local or remote paths; current user approval is required.")
+prompt(["chmod"], "Changing file permissions requires current user approval.")
+prompt(["chown"], "Changing file ownership requires current user approval.")
+prompt(["xattr"], "Changing extended attributes requires current user approval.")
+prompt(["dd"], "Raw block copying can destroy data; current user approval is required.")
+
+forbid(
+    ["rm", ["-rf", "-fr"], "/"],
+    "Root deletion is blocked. Delete a named workspace path instead.",
+    match = ["rm -rf /", "rm -fr /"],
+    not_match = ["rm -rf ./build"],
+)
+forbid(
+    ["rm", "-rf", "--no-preserve-root", "/"],
+    "Root deletion is blocked. Delete a named workspace path instead.",
+)
+forbid(
+    ["sudo", "rm", ["-rf", "-fr"], "/"],
+    "Privileged root deletion is blocked. Delete a named workspace path instead.",
+)
+forbid(
+    ["chmod", "-R", "777", "/"],
+    "Recursive world-writable root permissions are blocked. Change a named workspace path instead.",
+)
+forbid(["mkfs"], "Filesystem formatting is blocked. Use a disposable image or sandbox instead.")
+
+# Language runtimes, builds, tests, and local formatting.
+allow(["python3"], "Python development commands are approved.")
+allow(["node"], "Node.js development commands are approved.")
+allow(["bun"], "Bun development commands are approved. Specific prompt rules below take precedence.")
+allow(["npm"], "npm development commands are approved. Specific prompt rules below take precedence.")
+allow(["pnpm"], "pnpm development commands are approved. Specific prompt rules below take precedence.")
+allow(["npx"], "Project tool execution is approved.")
+allow(["cargo"], "Cargo development commands are approved. Specific prompt rules below take precedence.")
+allow(["rustc"], "Rust compilation is approved.")
+allow(["go"], "Go development commands are approved. Specific prompt rules below take precedence.")
+allow(["swift"], "Swift development commands are approved.")
+allow(["dotnet"], ".NET development commands are approved. Specific prompt rules below take precedence.")
+allow(["java"], "Java development commands are approved.")
+allow(["javac"], "Java compilation is approved.")
+allow(["mvn"], "Maven development commands are approved.")
+allow(["gradle"], "Gradle development commands are approved.")
+allow(["clang"], "C/C++ compilation is approved.")
+allow(["clang++"], "C++ compilation is approved.")
+allow(["gcc"], "C compilation is approved.")
+allow(["g++"], "C++ compilation is approved.")
+allow(["cmake"], "CMake configuration and builds are approved.")
+allow(["make"], "Local Make targets are approved.")
+allow(["just"], "Local Just recipes are approved.")
+allow(["xcodebuild"], "Local Xcode builds and tests are approved.")
+allow(["pytest"], "Python tests are approved.")
+allow(["ruff"], "Python linting and formatting are approved.")
+allow(["mypy"], "Python type checking is approved.")
+allow(["biome"], "Biome checks and formatting are approved.")
+allow(["eslint"], "ESLint checks are approved.")
+allow(["prettier"], "Prettier formatting is approved.")
+allow(["tsc"], "TypeScript type checking is approved.")
+
+# Dependency, toolchain, and registry mutation.
+for manager in ["npm", "pnpm", "bun"]:
+    for action in ["install", "add", "remove", "uninstall", "update", "link", "unlink", "publish"]:
+        prompt([manager, action], "Dependency or registry mutation requires current user approval.")
+prompt(["npm", "deprecate"], "Changing published package metadata requires current user approval.")
+prompt(["pnpm", "deploy"], "Creating a deployment bundle requires current user approval.")
+for action in ["add", "remove", "install", "uninstall", "update", "publish", "yank"]:
+    prompt(["cargo", action], "Dependency, toolchain, or registry mutation requires current user approval.")
+prompt(["go", "get"], "Changing Go module dependencies requires current user approval.")
+prompt(["go", "install"], "Installing a Go binary requires current user approval.")
+prompt(["python3", "-m", "pip", ["install", "uninstall"]], "Python environment mutation requires current user approval.")
+prompt(["pip", ["install", "uninstall"]], "Python environment mutation requires current user approval.")
+prompt(["pip3", ["install", "uninstall"]], "Python environment mutation requires current user approval.")
+prompt(["uv", ["add", "remove", "sync", "publish"]], "Dependency, environment, or registry mutation requires current user approval.")
+prompt(["uv", "pip", ["install", "uninstall"]], "Python environment mutation requires current user approval.")
+prompt(["poetry", ["add", "remove", "install", "update", "publish"]], "Dependency, environment, or registry mutation requires current user approval.")
+prompt(["gem", ["install", "uninstall", "push", "yank"]], "Ruby environment or registry mutation requires current user approval.")
+prompt(["dotnet", ["add", "remove"], "package"], ".NET dependency mutation requires current user approval.")
+prompt(["dotnet", "tool", ["install", "uninstall", "update"]], ".NET toolchain mutation requires current user approval.")
+prompt(["dotnet", "nuget", ["push", "delete"]], "NuGet registry mutation requires current user approval.")
+allow(["brew", ["info", "list", "search", "outdated"]], "Homebrew inspection is approved.")
+prompt(["brew", ["install", "uninstall", "upgrade", "update", "tap", "untap", "services"]], "System package or service mutation requires current user approval.")
+
+# Git inspection and local editing are approved; history and publication mutations prompt.
+allow(["git"], "Git inspection, staging, fetching, and working-tree edits are approved. Specific prompt rules below take precedence.")
+for action in ["commit", "push", "merge", "rebase", "reset", "restore", "checkout", "switch", "cherry-pick", "revert", "am", "notes", "replace", "update-ref"]:
+    prompt(["git", action], "Git history or branch state mutation requires current user approval.")
+prompt(["git", "push"], "Publishing Git refs requires current user approval.", match = ["git push", "git push origin main"], not_match = ["git status"])
+prompt(["git", "tag"], "Creating, changing, or deleting Git tags requires current user approval.")
+prompt(["git", "clean"], "Deleting untracked files requires current user approval.")
+prompt(["git", "config"], "Changing Git configuration or identity requires current user approval.")
+prompt(["git", "branch", ["-d", "-D", "-m", "-M"]], "Deleting or renaming a branch requires current user approval.")
+prompt(["git", "remote", ["add", "remove", "rename", "set-url", "prune", "update"]], "Changing Git remotes requires current user approval.")
+prompt(["git", "stash", ["push", "pop", "apply", "drop", "clear", "branch"]], "Changing stashed or working-tree state requires current user approval.")
+prompt(["git", "worktree", ["add", "remove", "move", "prune", "repair", "lock", "unlock"]], "Changing worktree state requires current user approval.")
+prompt(["git", "submodule", ["add", "update", "deinit", "set-url", "set-branch"]], "Changing submodule state requires current user approval.")
+prompt(["git", ["gc", "prune"]], "Pruning Git objects requires current user approval.")
+prompt(["git", "reflog", "expire"], "Expiring reflog recovery data requires current user approval.")
+prompt(["git", "lfs", ["push", "lock", "unlock", "prune"]], "Publishing or deleting Git LFS state requires current user approval.")
+
+# GitHub reads are approved; remote writes prompt.
+allow(["gh"], "GitHub inspection is approved. Specific prompt rules below take precedence.")
+prompt(["gh", "api"], "GitHub API requests can mutate remote state; current user approval is required.")
+prompt(["gh", "pr", ["create", "merge", "close", "reopen", "edit", "review", "comment", "ready"]], "Changing pull-request state requires current user approval.")
+prompt(["gh", "issue", ["create", "close", "reopen", "edit", "comment", "delete"]], "Changing issue state requires current user approval.")
+prompt(["gh", "release"], "Changing release state requires current user approval.")
+prompt(["gh", "repo", ["create", "delete", "fork", "archive", "rename", "edit"]], "Changing repository state requires current user approval.")
+prompt(["gh", "workflow", ["run", "enable", "disable"]], "Changing or dispatching workflow state requires current user approval.")
+prompt(["gh", "run", ["rerun", "cancel", "delete"]], "Changing workflow-run state requires current user approval.")
+prompt(["gh", "secret"], "Changing or reading repository secrets requires current user approval.")
+prompt(["gh", "variable"], "Changing repository variables requires current user approval.")
+prompt(["gh", "auth"], "Changing GitHub authentication requires current user approval.")
+prompt(["gh", "cache", "delete"], "Deleting GitHub Actions caches requires current user approval.")
+prompt(["gh", "gist", ["create", "edit", "delete"]], "Changing gist state requires current user approval.")
+prompt(["gh", "label", ["create", "edit", "delete", "clone"]], "Changing label state requires current user approval.")
+prompt(["gh", "project"], "Changing GitHub project state requires current user approval.")
+prompt(["gh", "codespace", ["create", "delete", "rebuild", "stop", "ssh"]], "Changing or entering a codespace requires current user approval.")
+
+# Network reads and diagnostics. Known write forms prompt.
+allow(["curl"], "HTTP verification is approved. Explicit write-form rules below take precedence.")
+prompt(["curl", ["-X", "--request"]], "An explicit HTTP method requires current user approval.")
+prompt(["curl", ["-d", "--data", "--data-raw", "--data-binary", "-F", "--form", "-T", "--upload-file"]], "Uploading HTTP request data requires current user approval.")
+allow(["wget"], "HTTP download verification is approved. Explicit write-form rules below take precedence.")
+prompt(["wget", ["--post-data", "--post-file", "--method", "--body-data", "--body-file"]], "An HTTP write request requires current user approval.")
+allow(["dig"], "DNS diagnostics are approved.")
+allow(["nslookup"], "DNS diagnostics are approved.")
+allow(["ping"], "Network reachability diagnostics are approved.")
+prompt(["ssh"], "Remote shell access requires current user approval.")
+prompt(["scp"], "Remote file transfer requires current user approval.")
+prompt(["sftp"], "Remote file transfer requires current user approval.")
+
+# Containers and infrastructure.
+allow(["docker", ["ps", "images", "inspect", "logs", "stats", "version", "info"]], "Docker inspection is approved.")
+allow(["docker", "compose", ["ps", "logs", "config", "images", "top"]], "Docker Compose inspection is approved.")
+prompt(["docker", ["run", "exec", "build", "pull", "push", "login", "logout", "rm", "rmi", "stop", "start", "restart", "kill", "system", "container", "image", "volume", "network"]], "Changing container, image, registry, or daemon state requires current user approval.")
+prompt(["docker", "compose", ["up", "down", "build", "pull", "push", "restart", "stop", "start", "rm", "exec", "run"]], "Changing Compose service state requires current user approval.")
+allow(["kubectl", ["get", "describe", "logs", "diff", "explain", "version", "cluster-info"]], "Kubernetes inspection is approved.")
+prompt(["kubectl", ["apply", "create", "delete", "patch", "edit", "replace", "exec", "attach", "cp", "scale", "cordon", "uncordon", "drain", "taint", "label", "annotate"]], "Changing cluster state or entering a workload requires current user approval.")
+prompt(["kubectl", "rollout", ["restart", "undo"]], "Changing rollout state requires current user approval.")
+allow(["terraform"], "Terraform inspection, formatting, validation, and planning are approved. Specific prompt rules below take precedence.")
+prompt(["terraform", ["apply", "destroy", "import", "taint", "untaint", "force-unlock"]], "Changing managed infrastructure requires current user approval.")
+prompt(["terraform", "state", ["mv", "rm", "push", "replace-provider"]], "Changing Terraform state requires current user approval.")
+prompt(["ansible-playbook"], "Executing remote configuration changes requires current user approval.")
+
+# Deployment and publication CLIs.
+for command in ["vercel", "netlify", "fly", "railway", "pulumi", "serverless"]:
+    prompt([command], "Deployment or cloud-state changes require current user approval.")
+prompt(["wrangler", ["deploy", "publish", "delete", "secret", "kv", "r2", "d1"]], "Changing Cloudflare state requires current user approval.")
+prompt(["aws"], "AWS commands can change cloud state or expose data; current user approval is required.")
+prompt(["gcloud"], "Google Cloud commands can change cloud state or expose data; current user approval is required.")
+prompt(["az"], "Azure commands can change cloud state or expose data; current user approval is required.")
+
+# Host and process state.
+prompt(["sudo"], "Privilege escalation requires current user approval.")
+prompt(["kill"], "Terminating a process requires current user approval.")
+prompt(["pkill"], "Terminating processes requires current user approval.")
+prompt(["killall"], "Terminating processes requires current user approval.")
+prompt(["open"], "Opening a host application or URL requires current user approval.")
+prompt(["osascript"], "Automating host applications requires current user approval.")
+prompt(["launchctl"], "Changing host services requires current user approval.")
+allow(["defaults", "read"], "macOS preference inspection is approved.")
+prompt(["defaults", ["write", "delete", "rename", "import"]], "Changing macOS preferences requires current user approval.")
+prompt(["security"], "Keychain access can expose or change credentials; current user approval is required.")
+prompt(["diskutil"], "Changing disk state requires current user approval.")
+prompt(["mount"], "Mounting filesystems requires current user approval.")
+prompt(["umount"], "Unmounting filesystems requires current user approval.")
+prompt(["shutdown"], "Shutting down the host requires current user approval.")
+prompt(["reboot"], "Rebooting the host requires current user approval.")
+
+# Do not allow opaque shell-wrapper prefixes. Codex evaluates simple command chains
+# command-by-command; advanced shell programs remain subject to the wrapper policy.

@@ -1,0 +1,62 @@
+# Live Codex home: deny by default. Add durable source paths explicitly.
+
+# Root harness sources
+!/.gitignore
+!/AGENTS.md
+!/ARCHITECTURE.md
+!/model-instructions.md
+
+# Durable knowledge, policy, validation, and role sources
+!/docs/
+!/docs/**
+!/rules/
+!/rules/**
+!/scripts/
+!/scripts/**
+
+# Generated documentation is runtime output.
+/docs/generated/
+
+# Never publish credentials, conversations, rollouts, databases, or host state.
+/.caveman.json
+/config.toml
+/*.config.toml
+!/explorer.config.toml
+!/worker.config.toml
+!/reviewer.config.toml
+!/responder.config.toml
+!/architect.config.toml
+!/orchestrator.config.toml
+/auth.json
+/history.jsonl
+/installation_id
+/attachments/
+/cache/
+/log/
+/logs_*.sqlite*
+/goals_*.sqlite*
+/memories_*.sqlite*
+/state_*.sqlite*
+/sqlite/
+/sessions/
+/shell_snapshots/
+/mcp-oauth-locks/
+/models_cache.json
+/app-server-control/
+/app-server-daemon/
+/computer-use/
+/node_repl/
+/plugins/
+/skills/
+/vendor_imports/
+/.codex-global-state.json*
+/.personality_migration
+/version.json
+/.tmp/
+/tmp/
+
+# Local tool output and compression backups inside allowed source trees.
+**/.DS_Store
+**/__pycache__/
+**/*.py[cod]
+**/*.original.md

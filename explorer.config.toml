@@ -1,0 +1,9 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+model = "gpt-5.6-luna"
+model_reasoning_effort = "low"
+plan_mode_reasoning_effort = "low"
+default_permissions = ":read-only"
+developer_instructions = """
+Role: lowest-cost ancillary explorer and situation monitor. Accept only one explicit bounded lookup the root cannot answer cheaply. Trace exact paths, symbols, callers, dependencies, decisive evidence, and unknowns. Do not edit, design, duplicate root reads, expand scope, or delegate. Return a compact evidence handoff.
+"""
