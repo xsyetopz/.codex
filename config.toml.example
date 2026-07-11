@@ -1,0 +1,263 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+# https://developers.openai.com/codex/config-reference
+
+approval_policy = { granular = { sandbox_approval = true, rules = true, mcp_elicitations = true, request_permissions = true, skill_approval = false } }
+allow_login_shell = false
+
+model = "gpt-5.6-luna"
+review_model = "gpt-5.6-sol"
+model_reasoning_effort = "low"
+model_reasoning_summary = "concise"
+model_verbosity = "low"
+model_instructions_file = "~/.codex/model-instructions.md"
+developer_instructions = """
+Default role: usage-conscious engineering lead and integration owner. Own the outcome, root Goal lifecycle, cheapest adequate role selection, integration, and final validation. Work alone by default; delegate only under the shared coordination contract, and verify role reports before adopting them.
+"""
+compact_prompt = """
+Role: Compress conversation state for reliable continuation.
+
+Personality: Neutral, exact, and non-narrative.
+
+Goal: Preserve the minimum state needed to resume without re-discovery.
+
+Success criteria:
+- Keep the request or persisted Goal, scope, evidence, decisions, ownership, changed paths, validation, risks, blockers, and next action.
+- Preserve exact errors, IDs, dates, models, profiles, efforts, and unknown or stale status when material.
+
+Constraints:
+- Exclude secrets, filler, tool chatter, stale hypotheses, repeated plans, and irrelevant logs.
+- Do not solve the task or invent progress.
+
+Tools: Use only existing conversation state; make no calls.
+
+Output: Return compact Markdown ordered by objective, work state, evidence, and next action.
+
+Stop rules: Stop when required continuation state is preserved once without repetition.
+"""
+personality = "none"
+plan_mode_reasoning_effort = "low"
+service_tier = "default"
+web_search = "live"
+project_doc_max_bytes = 32768
+default_permissions = ":danger-full-access"
+cli_auth_credentials_store = "keyring"
+analytics.enabled = false
+hide_agent_reasoning = true
+file_opener = "cursor"
+disable_paste_burst = true
+
+notify = [
+    "~/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
+    "turn-ended",
+    "--previous-notify",
+    "[\"bash\",\"-lc\",\"afplay \\/System\\/Library\\/Sounds\\/Submarine.aiff\"]",
+]
+
+[permissions.project-edit]
+description = "Edit workspace roots, deny secret files, and allow network access."
+extends = ":workspace"
+
+[permissions.project-edit.filesystem.":workspace_roots"]
+"**/.env" = "deny"
+"**/.env.*" = "deny"
+".codex" = "read"
+".devcontainer" = "read"
+
+[permissions.project-edit.network]
+enabled = true
+
+[agents]
+job_max_runtime_seconds = 900
+max_threads = 3
+max_depth = 1
+
+[agents.explorer]
+description = "Lowest-cost read-only explorer for one explicit, bounded evidence lookup the root cannot answer directly."
+config_file = "./explorer.config.toml"
+
+[agents.worker]
+description = "Low-cost implementation worker for one explicit, disjoint code slice with targeted validation."
+config_file = "./worker.config.toml"
+
+[agents.reviewer]
+description = "Independent reviewer for explicit or materially risky correctness, security, contract, and test checks."
+config_file = "./reviewer.config.toml"
+
+[agents.responder]
+description = "Sol escalation for reproduced failures or conflicts that survived a cheaper evidence-backed attempt."
+config_file = "./responder.config.toml"
+
+[features]
+fast_mode = false
+goals = true
+multi_agent = true
+image_generation = false
+prevent_idle_sleep = true
+personality = false
+in_app_browser = false
+computer_use = false
+apps = false
+secret_auth_storage = false
+workspace_dependencies = true
+
+# The live GPT-5.6 catalog selects the multi-agent version. This table exposes
+# named-role metadata and fixes the V2 slot shape without forcing V2 on.
+[features.multi_agent_v2]
+max_concurrent_threads_per_session = 3
+tool_namespace = "team"
+hide_spawn_agent_metadata = false
+
+# Keep unfinished duplicate selectors and globally broad tool surfaces off; see
+# docs/references/gpt-5.6-harness.md.
+
+[plugins."github@openai-curated"]
+enabled = false
+
+[plugins."openai-developers@openai-curated"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = false
+
+[plugins."superpowers@openai-curated"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = false
+
+[plugins."pdf@openai-primary-runtime"]
+enabled = false
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = false
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = false
+
+[plugins."template-creator@openai-primary-runtime"]
+enabled = false
+
+[skills]
+config = [
+    { path = "~/.codex/skills/.system/skill-creator/SKILL.md", enabled = false },
+    { path = "~/.codex/skills/.system/skill-installer/SKILL.md", enabled = false },
+    { path = "~/.codex/skills/.system/plugin-creator/SKILL.md", enabled = false },
+    { path = "~/.codex/skills/.system/imagegen/SKILL.md", enabled = false },
+]
+
+[tui]
+status_line = [
+    "model-with-reasoning",
+    "context-remaining",
+    "five-hour-limit",
+    "weekly-limit",
+    "used-tokens",
+]
+notifications = ["agent-turn-complete", "approval-requested"]
+notification_condition = "unfocused"
+notification_method = "auto"
+animations = false
+show_tooltips = false
+terminal_title = ["spinner", "project", "model"]
+
+[shell_environment_policy]
+inherit = "core"
+ignore_default_excludes = false
+experimental_use_profile = false
+exclude = [
+    "*_TOKEN",
+    "*_SECRET",
+    "*_KEY",
+    "*_PASSWORD",
+    "*_CREDENTIALS",
+    "*_API_KEY",
+    "*_AUTH*",
+    "*_CLIENT*",
+    "*_BEARER*",
+    "*_SIGNATURE*",
+    "*_HASH*",
+    "*_SALT*",
+    "*_PRIVATE*",
+    "*_CERT*",
+]
+set = { CODEX_HOME = "~/.codex", PATH = "~/.local/bin:~/.bun/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
+
+[mcp_servers.codebase-memory-mcp]
+command = "~/.local/bin/codebase-memory-mcp"
+startup_timeout_sec = 30
+tool_timeout_sec = 120
+required = true
+enabled_tools = [
+    "get_architecture",
+    "get_code_snippet",
+    "get_graph_schema",
+    "index_repository",
+    "index_status",
+    "list_projects",
+    "query_graph",
+    "search_code",
+    "search_graph",
+    "trace_path",
+    "detect_changes",
+]
+default_tools_approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.get_architecture]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.get_code_snippet]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.get_graph_schema]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.index_repository]
+approval_mode = "prompt"
+
+[mcp_servers.codebase-memory-mcp.tools.index_status]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.list_projects]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.query_graph]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.search_code]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.search_graph]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.trace_path]
+approval_mode = "approve"
+
+[mcp_servers.codebase-memory-mcp.tools.detect_changes]
+approval_mode = "approve"
+
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"
+# <<< codebase-memory-mcp SessionStart <<<
+
+[notice]
+hide_rate_limit_model_nudge = false
+
+[notice.model_migrations]
+"gpt-5.5" = "gpt-5.6-sol"
+"gpt-5.4" = "gpt-5.6-sol"
+"gpt-5.4-mini" = "gpt-5.6-terra"
+"gpt-5.3-codex-spark" = "gpt-5.6-luna"
+
+[history]
+persistence = "save-all"
+max_bytes = 268435456
+
+[tools]
+web_search = { context_size = "high", location = { country = "EE", city = "Tallinn", timezone = "Europe/Tallinn" } }
+
+[desktop]
+conversationDetailMode = "STEPS_PROSE"
+sansFontSize = 14
+codeFontSize = 13
+ambient-suggestions-enabled = false
+followUpQueueMode = "queue"
