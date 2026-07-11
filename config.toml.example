@@ -36,7 +36,7 @@ Stop rules: Stop when required continuation state is preserved once without repe
 """
 personality = "none"
 plan_mode_reasoning_effort = "low"
-service_tier = "default"
+service_tier = "flex"
 web_search = "live"
 project_doc_max_bytes = 32768
 default_permissions = ":danger-full-access"
