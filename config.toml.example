@@ -89,8 +89,6 @@ config_file = "./responder.config.toml"
 
 [features]
 fast_mode = false
-goals = true
-multi_agent = true
 image_generation = false
 prevent_idle_sleep = true
 personality = false
