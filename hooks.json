@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/usr/bin/python3 /Users/krystian/.codex/hooks/pretooluse-agent-commit-attribution.py",
+            "timeout": 10,
+            "statusMessage": "Checking agent commit attribution"
+          }
+        ]
+      }
+    ]
+  }
+}

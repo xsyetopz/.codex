@@ -1,0 +1,101 @@
+{
+  "version": 5,
+  "purpose": "Frozen synthetic transcript contracts for the configurable Codex compaction prompt. Required semantic canaries test preservation; forbidden raw-log canaries test safe deletion.",
+  "cases": [
+    {
+      "id": "goal_acceptance",
+      "transcript": "USER: Continue the migration. Active goal marker: GOAL-ORCHID-731. Acceptance requires API compatibility marker ACCEPT-API-204 and passing command `pytest -q tests/api`. ASSISTANT: Earlier brainstorming considered a rewrite tagged DEAD-REWRITE-991, but the user rejected it. Current work remains the compatibility migration. RAW LOG: RAW-DROP-GOAL-901 frame=1 frame=2 frame=3.",
+      "required": [
+        "GOAL-ORCHID-731",
+        "ACCEPT-API-204",
+        "pytest -q tests/api"
+      ],
+      "forbidden": [
+        "RAW-DROP-GOAL-901"
+      ]
+    },
+    {
+      "id": "decision_rationale",
+      "transcript": "USER: Choose the storage format. ASSISTANT: Decision DECISION-SQLITE-442: use SQLite because atomic transactions are required by RATIONALE-ATOMIC-883. An earlier JSON proposal SUPERSEDED-JSON-177 is no longer active. RAW LOG: RAW-DROP-DECISION-902 frame=1 frame=2 frame=3.",
+      "required": [
+        "DECISION-SQLITE-442",
+        "RATIONALE-ATOMIC-883"
+      ],
+      "forbidden": [
+        "RAW-DROP-DECISION-902"
+      ]
+    },
+    {
+      "id": "files_validation",
+      "transcript": "ASSISTANT: Changed `src/auth/session.ts` and `tests/auth/session.test.ts`. Validation `npm test -- session.test.ts` passed with marker TEST-PASS-562. USER: Continue from the validated edit. RAW LOG: RAW-DROP-FILES-903 frame=1 frame=2 frame=3.",
+      "required": [
+        "src/auth/session.ts",
+        "tests/auth/session.test.ts",
+        "npm test -- session.test.ts",
+        "TEST-PASS-562"
+      ],
+      "forbidden": [
+        "RAW-DROP-FILES-903"
+      ]
+    },
+    {
+      "id": "blocker_boundary_next",
+      "transcript": "ASSISTANT: Blocker BLOCKER-SDK-314: the required SDK is absent. Authorization boundary AUTH-NO-INSTALL-608: do not install dependencies without confirmation. Next action NEXT-CHECK-VENDOR-725: inspect the vendored interface. OLD-NEXT-WEBSEARCH-119 was superseded. RAW LOG: RAW-DROP-BLOCKER-904 frame=1 frame=2 frame=3.",
+      "required": [
+        "BLOCKER-SDK-314",
+        "AUTH-NO-INSTALL-608",
+        "NEXT-CHECK-VENDOR-725"
+      ],
+      "forbidden": [
+        "RAW-DROP-BLOCKER-904"
+      ]
+    },
+    {
+      "id": "unverified_claim",
+      "transcript": "ASSISTANT: The implementation was edited, but tests could not run. Status CLAIM-UNVERIFIED-481; do not represent it as CLAIM-VERIFIED-482 or complete. USER: Resume by running the narrow test. RAW LOG: RAW-DROP-CLAIM-905 frame=1 frame=2 frame=3.",
+      "required": [
+        "CLAIM-UNVERIFIED-481"
+      ],
+      "forbidden": [
+        "RAW-DROP-CLAIM-905"
+      ]
+    },
+    {
+      "id": "explicit_non_goal",
+      "transcript": "USER: Fix parser correctness under objective PARSER-FIX-671. Explicit non-goal NON-GOAL-CLI-338: do not redesign the CLI. ASSISTANT: A discarded tangent suggested DEAD-CLI-REDESIGN-339. Next action is inspect `src/parser.rs`. RAW LOG: RAW-DROP-NONGOAL-906 frame=1 frame=2 frame=3.",
+      "required": [
+        "PARSER-FIX-671",
+        "NON-GOAL-CLI-338",
+        "src/parser.rs"
+      ],
+      "forbidden": [
+        "RAW-DROP-NONGOAL-906"
+      ]
+    },
+    {
+      "id": "authorization_not_context",
+      "transcript": "USER: Analyze deployment options only; boundary ANALYSIS-ONLY-814. ASSISTANT: No deployment was authorized. A stale plan included DEPLOY-NOW-815 but it is canceled. Current next action NEXT-REPORT-816 is report tradeoffs without external writes. RAW LOG: RAW-DROP-AUTH-907 frame=1 frame=2 frame=3.",
+      "required": [
+        "ANALYSIS-ONLY-814",
+        "NEXT-REPORT-816"
+      ],
+      "forbidden": [
+        "RAW-DROP-AUTH-907"
+      ]
+    },
+    {
+      "id": "resume_handoff",
+      "transcript": "ASSISTANT: Milestone MILESTONE-INDEX-251 completed. Remaining file `src/indexer/cache.go`. Exact unresolved invariant INVARIANT-NO-DATA-LOSS-252. Next action NEXT-TEST-CACHE-253: run `go test ./src/indexer/...`. Repeated exploration marker REDISCOVERY-254 is obsolete. USER: Continue the active task. RAW LOG: RAW-DROP-RESUME-908 frame=1 frame=2 frame=3.",
+      "required": [
+        "MILESTONE-INDEX-251",
+        "src/indexer/cache.go",
+        "INVARIANT-NO-DATA-LOSS-252",
+        "NEXT-TEST-CACHE-253",
+        "go test ./src/indexer/..."
+      ],
+      "forbidden": [
+        "RAW-DROP-RESUME-908"
+      ]
+    }
+  ]
+}

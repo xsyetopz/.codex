@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "purpose": "Controlled GPT-5.6 prompt-representation experiment. Semantics are held constant while representation changes.",
+  "source_cases": "docs/references/gpt-5.6-anti-echo-cases.json",
+  "source_cases_sha256": "6dc90eda68308b45d4b6df07e3cd449d5902920cd8bd51a7722e42c30c254440",
+  "primary_case_ids": [
+    "quality_qualifier",
+    "project_name_fixation",
+    "frustration_register",
+    "marketing_register",
+    "removed_term_residue",
+    "removed_behavior_validation",
+    "negation_echo",
+    "branding_to_identifier",
+    "rationale_laundering"
+  ],
+  "holdout_case_ids": [
+    "holdout_exact_class",
+    "holdout_exact_diagnostic",
+    "holdout_exact_path",
+    "holdout_exact_route",
+    "holdout_exact_filename",
+    "holdout_declared_service_name",
+    "holdout_declared_component_name",
+    "holdout_declared_library_name"
+  ],
+  "semantic_contract": {
+    "classes": {
+      "contract": [
+        "identifiers",
+        "API names",
+        "diagnostics",
+        "file paths",
+        "requested literals"
+      ],
+      "context": [
+        "names",
+        "slogans",
+        "quality qualifiers",
+        "emotion",
+        "branding",
+        "incidental jargon"
+      ]
+    },
+    "workflow": [
+      "Classify each input term as contract or context before drafting.",
+      "Draft only concrete current behavior and evidence in a neutral engineering register.",
+      "Copy affected contract terms exactly.",
+      "Delete each context term not explicitly requested in the output.",
+      "Recheck that all affected contract terms remain exact and no unrequested context term remains.",
+      "After removals or renames, describe only the intended current state."
+    ],
+    "stop": "Return the requested user-facing sentence when both invariants hold.",
+    "invariants": [
+      "affected contract terms are exact",
+      "unrequested context terms are absent"
+    ]
+  },
+  "representations": [
+    "markdown",
+    "pseudocode",
+    "json",
+    "dsp"
+  ],
+  "controls": {
+    "reasoning_summary": "detailed",
+    "verbosity": "low",
+    "raw_reasoning_probe": true,
+    "no_tools": true,
+    "isolated_calls": true
+  }
+}

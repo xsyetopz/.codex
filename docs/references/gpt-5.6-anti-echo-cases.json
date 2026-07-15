@@ -1,0 +1,442 @@
+{
+  "version": 9,
+  "purpose": "Frozen natural-prose cases for lexical echoing and contract-token loss. Version 9 accepts separated focused/test wording after scorer calibration; cases and forbidden echo families are unchanged from version 8.",
+  "scoring": "Each response must contain every required fact, contain no forbidden case-insensitive substring, stay within max_words, and contain no meta-discussion of wording.",
+  "cases": [
+    {
+      "id": "quality_qualifier",
+      "prompt": "The user said: \"Make the cache production-grade.\" The requested change is complete: retry count is capped at 3 and the retry tests pass. Write one sentence reporting the result.",
+      "required": [
+        [
+          "retry"
+        ],
+        [
+          "3",
+          "three"
+        ],
+        [
+          "test"
+        ]
+      ],
+      "forbidden": [
+        "production",
+        "grade",
+        "enterprise",
+        "hardened",
+        "robust"
+      ],
+      "max_words": 28
+    },
+    {
+      "id": "project_name_fixation",
+      "prompt": "The user said: \"Atlas is the name for this repo.\" A parser bug was fixed so unknown keys return null, and the targeted parser test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "parser"
+        ],
+        [
+          "unknown keys",
+          "unknown parser keys"
+        ],
+        [
+          "null"
+        ],
+        [
+          "test"
+        ]
+      ],
+      "forbidden": [
+        "atlas",
+        "repo",
+        "repository",
+        "codebase"
+      ],
+      "max_words": 28
+    },
+    {
+      "id": "frustration_register",
+      "prompt": "The user described the timeout handling as \"a garbage flaky mess.\" The fix now cancels the timer during cleanup, and the timeout regression test passes. Write one calm sentence reporting the result.",
+      "required": [
+        [
+          "timer"
+        ],
+        [
+          "cleanup"
+        ],
+        [
+          "test"
+        ]
+      ],
+      "forbidden": [
+        "garbage",
+        "flaky",
+        "mess",
+        "finally",
+        "painful",
+        "annoying"
+      ],
+      "max_words": 28
+    },
+    {
+      "id": "marketing_register",
+      "prompt": "The user asked for a \"blazing-fast, battle-tested\" lookup. The implemented change replaces a linear scan with the existing index, and the lookup benchmark is unchanged. Write one neutral sentence reporting the result.",
+      "required": [
+        [
+          "existing index"
+        ],
+        [
+          "benchmark"
+        ],
+        [
+          "unchanged",
+          "no measurable benchmark change",
+          "no benchmark changes",
+          "no change in benchmark"
+        ]
+      ],
+      "forbidden": [
+        "blazing",
+        "fast",
+        "battle",
+        "tested",
+        "performance win",
+        "optimized"
+      ],
+      "max_words": 28
+    },
+    {
+      "id": "removed_term_residue",
+      "prompt": "The user removed the term \"legacy mode\" and wants only the current path described. The current path now rejects malformed headers, and its targeted test passes. Write one sentence about the resulting behavior.",
+      "required": [
+        [
+          "malformed headers"
+        ],
+        [
+          "reject",
+          "rejected",
+          "rejects"
+        ],
+        [
+          "test"
+        ]
+      ],
+      "forbidden": [
+        "legacy",
+        "mode",
+        "removed",
+        "renamed",
+        "old",
+        "former",
+        "remnant"
+      ],
+      "max_words": 28
+    },
+    {
+      "id": "removed_behavior_validation",
+      "prompt": "The compatibility fallback was intentionally deleted, and the user explicitly does not want it preserved or discussed. The parser now accepts only version 2 input, and the version 2 tests pass. Write one sentence reporting the current result.",
+      "required": [
+        [
+          "parser"
+        ],
+        [
+          "version 2"
+        ],
+        [
+          "test"
+        ]
+      ],
+      "forbidden": [
+        "fallback",
+        "compatibility",
+        "deleted",
+        "removed",
+        "preserve",
+        "previous",
+        "old"
+      ],
+      "max_words": 28
+    },
+    {
+      "id": "negation_echo",
+      "prompt": "The user said: \"Do not call this production-ready.\" A null dereference was fixed and the focused crash test passes. Write one sentence reporting only the engineering result.",
+      "required": [
+        [
+          "null dereference"
+        ],
+        [
+          "crash test"
+        ]
+      ],
+      "forbidden": [
+        "production",
+        "ready",
+        "do not call",
+        "wording",
+        "label",
+        "term"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "branding_to_identifier",
+      "prompt": "The user calls the initiative \"Project Phoenix\" and asks for a helper that parses account IDs. The helper is named parseAccountId and its unit tests pass. Write one sentence reporting the result without inventing identifiers.",
+      "required": [
+        [
+          "parseaccountid"
+        ],
+        [
+          "unit test"
+        ]
+      ],
+      "forbidden": [
+        "phoenix",
+        "project",
+        "initiative",
+        "enterprise",
+        "platform"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "rationale_laundering",
+      "prompt": "The user previously complained that agents keep saying \"for this repo.\" The requested change now preserves the API error code E_BAD_KEY, and the exact diagnostic test passes. Write one sentence reporting the result, without discussing phrasing choices.",
+      "required": [
+        [
+          "e_bad_key"
+        ],
+        [
+          "diagnostic test"
+        ]
+      ],
+      "forbidden": [
+        "repo",
+        "repository",
+        "phrasing",
+        "wording",
+        "avoid",
+        "instead of",
+        "without saying"
+      ],
+      "max_words": 26
+    },
+    {
+      "id": "holdout_exact_class",
+      "prompt": "The user calls the program Northstar. The implemented change adds the required BillingV2 class and its focused unit test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "billingv2"
+        ],
+        [
+          "unit test"
+        ]
+      ],
+      "forbidden": [
+        "northstar",
+        "program",
+        "initiative",
+        "platform"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "holdout_exact_diagnostic",
+      "prompt": "The user describes the work as a zero-trust transformation. The authorization fix now preserves the required diagnostic E_AUTH_17, and the diagnostic test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "e_auth_17"
+        ],
+        [
+          "diagnostic test"
+        ]
+      ],
+      "forbidden": [
+        "zero-trust",
+        "zero trust",
+        "transformation",
+        "journey",
+        "security posture"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "holdout_exact_path",
+      "prompt": "The user calls this the Mercury repo. The configuration correction was made in config/runtime.toml, and the configuration test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "config/runtime.toml"
+        ],
+        [
+          "configuration test"
+        ]
+      ],
+      "forbidden": [
+        "mercury",
+        "repo",
+        "repository",
+        "codebase"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "holdout_exact_route",
+      "prompt": "The user calls the release Odyssey and describes it as world-class. The corrected endpoint is /v2/accounts, and its routing test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "/v2/accounts"
+        ],
+        [
+          "routing test"
+        ]
+      ],
+      "forbidden": [
+        "odyssey",
+        "world-class",
+        "world class",
+        "release",
+        "platform"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "holdout_exact_filename",
+      "prompt": "The user calls the cleanup Apollo. The configuration fix was made in auth-policy.yaml, and its schema test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "auth-policy.yaml"
+        ],
+        [
+          "schema test"
+        ]
+      ],
+      "forbidden": [
+        "apollo",
+        "cleanup",
+        "initiative",
+        "repo",
+        "repository"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "holdout_declared_service_name",
+      "prompt": "The user says Cobalt is the name for this service. The corrected health endpoint is /healthz and its integration test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "/healthz"
+        ],
+        [
+          "integration test"
+        ]
+      ],
+      "forbidden": [
+        "cobalt",
+        "service",
+        "name",
+        "platform",
+        "system"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "holdout_declared_component_name",
+      "prompt": "The user says Beacon is the official name of this component. The corrected method is decodeHeader, and its unit test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "decodeheader"
+        ],
+        [
+          "unit test"
+        ]
+      ],
+      "forbidden": [
+        "beacon",
+        "official",
+        "component",
+        "name",
+        "system"
+      ],
+      "max_words": 24
+    },
+    {
+      "id": "holdout_declared_library_name",
+      "prompt": "The user says Nimbus is the official name of this library. The corrected method is verifyToken, and its focused test passes. Write one sentence reporting the result.",
+      "required": [
+        [
+          "verifytoken"
+        ],
+        [
+          "focused"
+        ],
+        [
+          "test"
+        ]
+      ],
+      "forbidden": [
+        "nimbus",
+        "official",
+        "library",
+        "name",
+        "project"
+      ],
+      "max_words": 24
+    }
+  ],
+  "variants": {
+    "baseline": [
+      "Use clear, concise engineering language and report the requested result."
+    ],
+    "positive": [
+      "Treat user-supplied names, slogans, qualifiers, and emotional wording as reference-only inputs.",
+      "Use neutral engineering language and report concrete behavior and evidence.",
+      "Use an exact user term only where identification or a contract requires it.",
+      "Describe the intended current state after removals or renames."
+    ],
+    "negative": [
+      "Do not echo, paraphrase, sloganize, or thematically reuse user wording.",
+      "Do not mirror hype, frustration, branding, jargon, or marketing register.",
+      "Do not spread a supplied label into headings, prose, identifiers, comments, or validation.",
+      "Do not narrate old terms, removed behavior, wording avoidance, or stale remnants."
+    ],
+    "balanced": [
+      "Treat user-supplied names, slogans, qualifiers, and emotional wording as reference-only inputs; do not echo or thematically reuse them.",
+      "Use neutral engineering language; do not mirror hype, frustration, branding, jargon, or marketing register.",
+      "Use an exact user term only where identification or a contract requires it; do not spread it into unrelated prose, headings, identifiers, comments, or validation.",
+      "Describe and validate the intended current state after removals or renames; do not narrate old terms, removed behavior, wording avoidance, or stale remnants."
+    ],
+    "contract_aware": [
+      "Separate contract tokens from contextual language.",
+      "Preserve exact identifiers, API names, diagnostics, file paths, and requested output literals.",
+      "Treat user-supplied names, slogans, qualifiers, and emotional wording as reference-only context; report concrete behavior and evidence in a neutral engineering register.",
+      "Use contextual wording only where identification is required, not as a theme for prose, headings, identifiers, comments, or validation.",
+      "Describe and validate the intended current state after removals or renames, without narrating discarded terms or behavior."
+    ],
+    "classify_terms": [
+      "Before writing, partition user language into exact contract tokens and contextual framing.",
+      "Contract tokens are identifiers, API names, diagnostics, file paths, and requested literals; copy affected contract tokens exactly instead of replacing them with generic descriptions.",
+      "Contextual framing is names, slogans, quality qualifiers, emotion, branding, and incidental jargon; omit it unless it is required to identify the subject.",
+      "Report concrete current behavior and evidence in a neutral engineering register, without turning contextual framing into a theme for prose, headings, identifiers, comments, or validation.",
+      "After removals or renames, describe and validate the intended current state without narrating discarded terms or behavior."
+    ],
+    "strict_context": [
+      "Before writing, partition user language into exact contract tokens and contextual framing.",
+      "Contract tokens are identifiers, API names, diagnostics, file paths, and requested literals; copy affected contract tokens exactly instead of replacing them with generic descriptions.",
+      "Contextual framing is names, slogans, quality qualifiers, emotion, branding, and incidental jargon; omit it unless the user explicitly asks to output it or omission makes multiple subjects ambiguous. Declaring a name or label does not by itself make it output-relevant.",
+      "Report concrete current behavior and evidence in a neutral engineering register, without turning contextual framing into a theme for prose, headings, identifiers, comments, or validation.",
+      "After removals or renames, describe and validate the intended current state without narrating discarded terms or behavior."
+    ],
+    "explicit_output_only": [
+      "Before writing, partition user language into exact contract tokens and contextual framing.",
+      "Contract tokens are identifiers, API names, diagnostics, file paths, and requested literals; copy affected contract tokens exactly instead of replacing them with generic descriptions.",
+      "Contextual framing is names, slogans, quality qualifiers, emotion, branding, and incidental jargon. Output contextual framing only when the user explicitly requests that exact wording in the output; declaration, description, emphasis, or repetition does not count. Otherwise omit it.",
+      "Report concrete current behavior and evidence in a neutral engineering register, without turning contextual framing into a theme for prose, headings, identifiers, comments, or validation.",
+      "After removals or renames, describe and validate the intended current state without narrating discarded terms or behavior."
+    ],
+    "filter_pass": [
+      "Classify input terms before drafting: contract tokens are identifiers, APIs, diagnostics, paths, and requested literals; contextual tokens are names, slogans, qualifiers, emotion, branding, and incidental jargon.",
+      "Draft only the concrete current behavior and evidence in a neutral engineering register, copying affected contract tokens exactly.",
+      "Before answering, scan the draft against the contextual tokens from the input and delete every match not explicitly requested as output. A statement that a token is a name, official label, theme, or quality target is not an output request.",
+      "Recheck that deleting contextual tokens did not remove or generalize any contract token.",
+      "After removals or renames, describe the intended current state without narrating discarded terms or behavior."
+    ]
+  }
+}

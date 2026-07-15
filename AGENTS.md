@@ -10,6 +10,13 @@ This is the global agent map applied across repositories. Treat every repository
 - Inspect the repository's overview, architecture, contribution, security, and workflow documentation when present. File names vary; discover them from the repository rather than assuming them.
 - Use exact source, tests, configuration, and callsites as the authority for behavior and contracts.
 
+## Session handoff
+
+- If `.codex/HANDOFF.md` exists in the active repository, read it before starting work and tell the user that unfinished work is available.
+- Do not require the user to remember a resume phrase. Ask whether to resume the handoff or handle the new request.
+- Resume only with user authorization. Create a persistent Goal only when the user explicitly requests one.
+- When the handoff is completed or abandoned, archive or remove it and delete stale handoff instructions.
+
 ## Commands
 
 There are no global build, test, lint, format, or publication commands. Derive them from the active repository's documented tooling and manifests.

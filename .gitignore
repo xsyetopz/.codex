@@ -1,10 +1,23 @@
 # Live Codex home: deny by default. Add durable source paths explicitly.
 
+/*
+
 # Root harness sources
 !/.gitignore
+!/.codex/
+!/.codex/HANDOFF.md
+!/config.toml.example
 !/AGENTS.md
 !/ARCHITECTURE.md
-!/model-instructions.md
+!/instructions/
+!/instructions/**
+!/prompts/
+!/prompts/**
+!/hooks.json
+!/hooks/
+!/hooks/**
+!/agents/
+!/agents/**
 
 # Durable knowledge, policy, validation, and role sources
 !/docs/
@@ -21,12 +34,10 @@
 /.caveman.json
 /config.toml
 /*.config.toml
-!/explorer.config.toml
-!/worker.config.toml
-!/reviewer.config.toml
-!/responder.config.toml
-!/architect.config.toml
-!/orchestrator.config.toml
+!/build.config.toml
+!/deep.config.toml
+!/speed.config.toml
+!/promptlab.config.toml
 /auth.json
 /history.jsonl
 /installation_id

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "baseline": {
+    "path": "instructions/default.md",
+    "sha256": "411c91cc379efc2fcb8c69d4e221b313c3a0b12507062dae98b4711f5049ded5",
+    "bytes": 8375,
+    "words": 1168,
+    "lines": 76,
+    "measured_input_token_delta": 1534
+  },
+  "model_efforts": {
+    "gpt-5.6-sol": "medium",
+    "gpt-5.6-terra": "medium",
+    "gpt-5.6-luna": "high"
+  },
+  "atomic_contracts": [
+    {"id":"scope_authority","must_state":["current request defines scope","prior context is evidence, not permission","act only within authority"]},
+    {"id":"edit_authority","must_state":["do not edit for answer, review, diagnosis, or plan","edit when requested","confirm destructive or external actions and material expansion"]},
+    {"id":"preservation","must_state":["preserve unrelated work and behavior","preserve contractual APIs, diagnostics, exceptions, return shapes, whitespace, and punctuation"]},
+    {"id":"evidence","must_state":["inspect exact owning sources, callers, tests, configuration, and adjacent behavior","treat incomplete evidence as incomplete","use current official sources for unstable facts","treat community experience as real-world evidence"]},
+    {"id":"anti_echo","must_state":["classify contract and context terms","copy affected contract terms exactly","remove unrequested context terms","do not narrate discarded terms or behavior"]},
+    {"id":"engineering_loop","must_state":["frame observable acceptance behavior","trace the owning boundary","plan by risk","implement without speculative cleanup","review edge and failure paths","validate narrow then required broad checks","report result, evidence, risks, and uncertainty"]},
+    {"id":"stopping","must_state":["stop after the requested outcome is supported","do not add optional work or manufacture certainty"]},
+    {"id":"completion","must_state":["completion requires the user-visible outcome, preserved contracts, validation, addressed risks, and explicit uncertainty","a response, handoff, time, or budget does not prove completion"]},
+    {"id":"goals","must_state":["only root changes Goal status","create a standing Goal only on explicit request with an auditable finish line","complete only against every criterion","blocked and pause behavior remain explicit","treat allowances as shared finite budgets"]},
+    {"id":"delegation","must_state":["work alone by default","delegate only when authorized and independent work exists","at most two children and one hop","writers own exclusive scope and preserve others' edits","root verifies handoffs","challenge dismissed material risk then escalate"]},
+    {"id":"tools_edits","must_state":["use the smallest relevant tool set","resolve prerequisites before dependent work","programmatic calls only for deterministic operations","use fallbacks for weak evidence","create or change text with Python 3","read-only roles leave no artifacts","slash commands are client input"]},
+    {"id":"communication","must_state":["brief update before multi-step tool work","update only at major changes","final answer leads with evidence and caveats","state what unlocks blocked validation"]}
+  ],
+  "frozen_suites": {
+    "operational": {"path":"docs/references/gpt-5.6-operational-cases.json","cases":8},
+    "enterprise_peer": {"path":"docs/references/gpt-5.6-enterprise-peer-cases.json","cases":8},
+    "anti_echo": {"path":"docs/references/gpt-5.6-anti-echo-cases.json","cases":17},
+    "promptcraft": {"path":"docs/references/gpt-5.6-promptcraft-cases.json","cases":6},
+    "compaction": {"path":"docs/references/gpt-5.6-compaction-cases.json","cases":8},
+    "aider": {"path":"docs/references/gpt-5.6-aider-cases.json","regression_cases":6,"holdout_cases":12},
+    "repository": {"path":"docs/references/gpt-5.6-repository-cases.json","cases":3}
+  },
+  "candidate_gate": {
+    "selection": "no new frozen-case failure and lower measured input tokens",
+    "repeat": "prospective winner repeats on all three model efforts",
+    "holdout": "no material regression on untouched holdouts",
+    "integration": "exact full-prompt comparison must not regress any atomic contract",
+    "adoption": "choose the smallest non-regressing candidate; otherwise retain baseline"
+  }
+}

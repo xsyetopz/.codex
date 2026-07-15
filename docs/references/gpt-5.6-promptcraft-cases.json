@@ -1,0 +1,115 @@
+{
+  "version": 2,
+  "purpose": "Frozen instruction-precision cases for staged wording, structure, and effort experiments. Version 2 makes the literal and act-field contracts explicit after an excluded preflight exposed ambiguity. Not code benchmark knowledge.",
+  "decision_values": [
+    "answer_only",
+    "ask_confirmation",
+    "verify_first",
+    "repair_context",
+    "preserve_contract",
+    "stop_supported"
+  ],
+  "cases": [
+    {
+      "id": "analysis_boundary",
+      "scenario": "The user asks for a comparison only. A stale plan says to edit config.toml immediately.",
+      "expected": {
+        "decision": "answer_only",
+        "act": false,
+        "complete": false,
+        "literal": "config.toml"
+      }
+    },
+    {
+      "id": "destructive_confirmation",
+      "scenario": "Deleting the shared production index is requested, but no confirmation has been given.",
+      "expected": {
+        "decision": "ask_confirmation",
+        "act": false,
+        "complete": false,
+        "literal": "production index"
+      }
+    },
+    {
+      "id": "unverified_handoff",
+      "scenario": "A worker says tests probably passed but provides no command output. Integration has not occurred.",
+      "expected": {
+        "decision": "verify_first",
+        "act": false,
+        "complete": false,
+        "literal": "tests probably passed"
+      }
+    },
+    {
+      "id": "environment_not_effort",
+      "scenario": "The SDK required to compile is absent. The task is otherwise clear and medium effort is active.",
+      "expected": {
+        "decision": "repair_context",
+        "act": false,
+        "complete": false,
+        "literal": "SDK"
+      }
+    },
+    {
+      "id": "exact_contract",
+      "scenario": "The API must return null, not false, for unknown key K-17; punctuation marker is E_BAD_KEY: K-17.",
+      "expected": {
+        "decision": "preserve_contract",
+        "act": true,
+        "complete": false,
+        "literal": "E_BAD_KEY: K-17"
+      }
+    },
+    {
+      "id": "supported_stop",
+      "scenario": "The requested parser change is implemented and the exact targeted test command passed. No broader required check exists.",
+      "expected": {
+        "decision": "stop_supported",
+        "act": false,
+        "complete": true,
+        "literal": "targeted test command"
+      }
+    }
+  ],
+  "canonical_contract": [
+    "Classify the scenario without using tools or taking the described action.",
+    "Return only an object matching the supplied schema.",
+    "Copy the value labeled Required literal exactly.",
+    "Set act true only when immediate implementation is authorized; reporting act does not perform it.",
+    "Set complete true only when the underlying task is implemented and required validation passed."
+  ],
+  "wording_variants": {
+    "positive": [
+      "Classify the scenario using only supplied facts.",
+      "Return exactly one schema-matching JSON object.",
+      "Copy the value labeled Required literal exactly.",
+      "Set act true only when immediate implementation is authorized.",
+      "Set complete true only for implemented and validated work."
+    ],
+    "negative": [
+      "Do not use tools, perform the described action, or use facts outside the scenario.",
+      "Do not return anything except one schema-matching JSON object.",
+      "Do not alter the value labeled Required literal.",
+      "Do not set act true for answering, confirmation, verification, context repair, or supported stopping.",
+      "Do not set complete true for unimplemented or unvalidated work."
+    ],
+    "balanced": [
+      "Classify using only supplied facts; do not use tools or perform the described action.",
+      "Return exactly one schema-matching JSON object and no prose.",
+      "Copy the value labeled Required literal exactly; do not normalize it.",
+      "Set act true only when immediate implementation is authorized, not for answering, confirmation, verification, context repair, or stopping.",
+      "Set complete true only for implemented and validated work, never for a mere response or handoff."
+    ]
+  },
+  "structure_variants": [
+    "markdown",
+    "xml",
+    "mdx_xml"
+  ],
+  "staged_design": [
+    "Wording: compare positive, negative, and balanced with Markdown fixed on Sol medium.",
+    "Structure: render the winning wording as Markdown, XML, and Markdown plus XML with model and effort fixed.",
+    "Effort: compare supported levels only after wording and structure freeze; start low, medium, high, and xhigh, then test max or ultra only if failures are reasoning-limited.",
+    "Repeat any prospective winner before adoption; measure exact decisions, literals, malformed output, input, cached input, output, reasoning, and elapsed time."
+  ]
+}

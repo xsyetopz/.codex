@@ -1,122 +1,114 @@
-# GPT-5.6 Codex engineering-team harness
+# GPT-5.6 Codex configuration
 
-Checked 2026-07-10 against Codex CLI `0.144.1`, the live GPT-5.6 catalog fetched 2026-07-10, and `openai/codex` main commit `dc5ae378967cff0de2cfb30b98c52047ab978e3d`. Main advanced during the audit from `1f0566d3`; an exact path diff confirmed no changes to the audited prompt, Goal, feature, config, session, app-server, or multi-agent sources. Profile-v2 parsing was also checked against the installed `rust-v0.144.1` source.
+Checked 2026-07-12 against Codex CLI `0.144.1`, the live model catalog fetched at `2026-07-12T05:30:01Z`, current official Codex documentation, the local `docs/codex` runtime studies, the curated `docs/reddit/codex` community sample, and open upstream issue `openai/codex#31814`.
 
-## Design decision
+## Resulting configuration
 
-TeamSTEPPS defines four shared skills rather than four job titles: communication, leading teams, mutual support, and situation monitoring. The engineering harness therefore places one translated teamwork protocol in `model-instructions.md` and uses narrow software roles derived from the guide's core, coordinating, contingency, ancillary/support, and cross-monitoring functions.
+`config.toml` is the master user layer used by plain `codex`. It now defaults to `gpt-5.6-sol` at `medium`, matching the documented Power preset. Three functional direct-session profiles and three separately discovered Greek-deity custom agents replace six overlapping legacy profiles:
 
-The translation keeps operational behavior and drops clinical simulation:
-
-| TeamSTEPPS tool | Engineering contract |
-| --- | --- |
-| Brief | Establish objective, evidence, roster, ownership, dependencies, integration, validation, and stop conditions. |
-| Closed Loop Communication | Named request, ambiguity check-back, confirmation or correction, evidence-backed completion, and root acknowledgment. |
-| Call-out and SBAR | Broadcast critical state; frame urgent blockers as situation, background evidence, assessment, and recommendation/request. |
-| STEP and Huddle | Scan product, team, environment, and progress; replan only when material evidence changes the plan. |
-| IPASS handoff | Transfer issue state, summary, owned actions and results, risks/contingencies, and receiver synthesis. |
-| Cross-monitoring and task assistance | Verify shared work, surface missed risk, and rebalance bounded work before overload causes conflict. |
-| Two-challenge, CUS, DESC, and STAR | Escalate evidence-backed material risk, stop unsafe action after one repeated challenge, resolve conflict concretely, and review high-risk actions. |
-| Debrief | After material collaboration or failure, record one evidence-backed process adjustment. |
-
-The guide's patient, health, emotion, burnout, illness, fatigue, and psychological-safety language is not attributed to models. The functional beneficiary is the user's acceptance contract, product behavior, and repository integrity.
-
-## Prompt ownership
-
-- `model-instructions.md` is the sole shared execution and TeamSTEPPS-derived protocol. It and the standalone compaction prompt use OpenAI's published GPT-5.6 complex-prompt structure in order: Role, Personality, Goal, Success criteria, Constraints, Tools, Output, and Stop rules.
-- `config.toml` adds only the default lead delta, compaction state, feature settings, and prompt-visible role registration.
-- Each root `*.config.toml` contains one role delta and model/effort settings. It inherits the shared model instructions and compact prompt.
-- `AGENTS.md` is a short global map with overview, read-next sources, command discovery, code/security, closer-scope precedence, and a compact code-discovery pointer. Workspace maps, local paths, and maintenance commands stay in `ARCHITECTURE.md`, this reference, and deterministic scripts.
-- Exact duplicate prompt paragraphs are rejected by `scripts/check-prompt-budgets.py`.
-
-Upstream `codex-rs/protocol/src/prompts/base_instructions/default.md` is a 275-line generic contract checklist, not the live GPT-5.6 catalog prompt. The replacement retains its material repository-instruction precedence, scope, progress, persistence, validation, and final-evidence duties while removing examples, repeated style scaffolding, and the upstream `apply_patch` mandate. Local Python-fu replaces that edit route once in the shared prompt.
-
-## Role, effort, and usage contract
-
-OpenAI states that additional weekly limits may apply and that usage varies with model, context, reasoning, tools, retrieval, and caching. Higher reasoning effort uses more tokens, Luna is the lowest-cost model, and Ultra explicitly trades higher token use for latency and capability. OpenAI positions Terra as the everyday balance, while Artificial Analysis reports Luna or Sol on the intelligence/cost Pareto frontier ahead of Terra in its tested effort levels. Because repeated turns compound cost in long-running Goals, standing profiles use Luna for routine work and Sol only for gated review or escalation. The independent benchmark is directional evidence, not a universal repository guarantee.
-
-| Surface | Team function | Model | Effort | Dispatch rule |
+| Invocation / role | Function | Model | Effort | Selection rule |
 | --- | --- | --- | --- | --- |
-| no profile | Engineering lead and Goal steward | `gpt-5.6-luna` | `low` | Default single-agent root, including long-running Goals. |
-| `explorer` | Ancillary support | `gpt-5.6-luna` | `low` | One explicit bounded lookup the root cannot answer cheaply. |
-| `worker` | Core implementation | `gpt-5.6-luna` | `low` | One explicit disjoint implementation slice. |
-| `reviewer` | Cross-monitor | `gpt-5.6-sol` | `low` | Explicit review or material risk only. |
-| `responder` | Contingency team | `gpt-5.6-sol` | `medium` | Reproduced failure after one documented cheaper attempt. |
-| `architect` | Technical decision support | `gpt-5.6-sol` | `high` | Rare root-only proof-grade escalation. |
-| `orchestrator` | Coordinating team leader | `gpt-5.6-luna` | `medium` | Deliberately selected multi-agent burst with independent slices. |
+| plain `codex` | Lead and integration owner | `gpt-5.6-sol` | `medium` | Default for ambiguous end-to-end work. |
+| `--profile speed` | Fast direct session | `gpt-5.6-luna` | `high` | Clear lookup, focused fix, test, transformation, or finishing pass. |
+| `--profile build` | Everyday direct session | `gpt-5.6-terra` | `medium` | Multi-file implementation, broad scan, or supporting-document work. |
+| `--profile deep` | Deliberate direct session | `gpt-5.6-sol` | `high` | High-blast-radius reasoning, architecture, security, failure recovery, or independent review. |
+| `agent_type=hermes` | Bounded child executor | `gpt-5.6-luna` | `high` | One clear, self-contained delegated slice. |
+| `agent_type=hephaestus` | Child workhorse | `gpt-5.6-terra` | `medium` | One multi-file, scan, or supporting-document slice. |
+| `agent_type=athena` | Child escalation/reviewer | `gpt-5.6-sol` | `high` | One high-risk reasoning, recovery, or review slice. |
 
-Routine root, exploration, implementation, and orchestration stay on Luna. Sol low is reserved for independent review, Sol medium for reproduced contingency work, and Sol high for rare proof-grade architecture. Terra, Xhigh, Max, and Ultra remain deliberate per-session user choices but are absent from standing profiles. Duration alone never selects a higher tier.
+The objective's `gpt-5.5-terra` label is not a current model slug. Both the live catalog and official model page identify the balanced model as `gpt-5.6-terra`; `gpt-5.5` remains a separate previous-generation model.
 
-Normal execution uses one agent. Multi-agent execution is capped at root plus two children. The 15-minute setting applies to CSV agent-job workers, not ordinary spawned threads; the root must bound and stop spawned work explicitly. Fast mode stays off, reasoning summaries are concise, the five-hour and weekly indicators remain visible, and the rate-limit model nudge is enabled. These controls reduce multiplicative contexts without inventing a weekly quota OpenAI does not publish.
+## Why these efforts
 
-The explorer, worker, reviewer, and responder files are each loaded by both `codex --profile NAME` and `[agents.NAME].config_file`. Architect and orchestrator are CLI profiles only. Old `quick-fix`, `build`, `debug`, and `think-hard` files and aliases remain absent.
+Official guidance says Sol is the flagship for complex open-ended work, Terra is the everyday workhorse and natural starting point for work previously given GPT-5.5, and Luna is for clear repeatable work with a known good result. Medium balances speed and depth; High is for difficult multi-step work and edge cases. OpenAI recommends the lowest effort that works and says most tasks do not need Max or Ultra.
 
-## Goal and plan contract
+The community sample is real-world behavioral evidence and is necessarily workload-dependent. Several patterns recur across user experience:
 
-A follow-up source audit checked Goal and slash-command behavior against `openai/codex` main commit `656a2d0905c9e0b9bdade1badab07ef6d42ca17c`. Slash commands are client-composer input, not model actions. Plan mode is host-selected; `update_plan` is a separate execution checklist and hard-fails in Plan mode with `update_plan is a TODO/checklist tool and is not allowed in Plan mode`.
+- Sol medium is repeatedly recommended as the pleasant or capable main driver; Sol high is a high-stakes escalation. Sol xhigh, max, and ultra receive repeated quota-burn reports.
+- Luna high/xhigh/max can be cost-effective for scoped implementation, but higher settings use more raw tokens, can meander, and can require more supervision. High is the conservative standing choice; Max stays an explicit one-off choice.
+- Terra feedback is mixed. Some users find it broad and effective for exploration or everyday work; others report high token use or no Pareto advantage. Medium preserves its documented workhorse role without treating it as universally cheaper.
+- Scope clarity and blast radius route better than difficulty alone: a hard isolated edit can stay on Luna, while a small auth, security, migration, or config change can justify Sol.
 
-Goals are stable, thread-scoped persisted state. The root has standing system/developer permission to call `create_goal` only when the user explicitly requests continued or autonomous work beyond an ordinary turn and supplies an auditable finish line. This satisfies the tool's explicit-request gate without treating ordinary tasks as Goals. Model tools remain `get_goal`, `create_goal`, and `update_goal`.
+This is a practical default ladder, not a claim that one model/effort wins every repository. Adjust a profile after real workload evidence without duplicating the master config.
 
-The model-facing `update_goal` schema exposes only `complete` and `blocked`, although Codex state and client APIs have a distinct `paused` status. For an explicit natural-language pause request, this harness uses `blocked` as a disclosed pause surrogate so automatic continuation stops immediately; this is a deliberate exception to the normal repeated-blocker threshold. Native clients should prefer Paused through their Goal controls or `thread/goal/set`. Only the root uses Goal tools. A deliberate resume starts a fresh blocked audit.
+## CLI and profile layering
 
-Automatic continuation occurs only while a Goal is Active, the thread is idle, no work or user input is pending, and the collaboration mode is not Plan. A continuation with no tool call is suppressed. Plan turns do not count toward Goal progress. Budget exhaustion is not completion. For Goals lasting hours or days, the root remains on Luna low, advances one verifiable milestone per continuation, batches and filters tool work, reuses cached context, and creates only short on-demand multi-agent bursts. Long duration is not evidence that Sol, Max, or Ultra is needed.
+Installed CLI help, the local config-layer study, and official profile documentation agree:
 
-## Multi-agent contract
+1. Plain `codex` loads `$CODEX_HOME/config.toml`.
+2. `codex --profile NAME` loads the same master file, then overlays `$CODEX_HOME/NAME.config.toml`; current direct profiles are `speed`, `build`, and `deep`.
+3. Project config and CLI `-c` overrides have higher precedence.
+4. A profile file therefore contains only values that differ from the master layer.
+5. Custom agents are independently discovered from `$CODEX_HOME/agents/*.toml`; each declares `name`, `description`, and `developer_instructions` and is not a profile alias.
 
-`multi_agent` and `goals` are stable and explicitly enabled. Live GPT-5.6 metadata selects multi-agent V2 for Sol and Terra and V1 for Luna. The config does not force the under-development V2 feature; it only sets V2 metadata visibility and the three-slot runtime shape used when the catalog selects V2.
+The three model-lane profiles and custom-agent files each contain only model, reasoning effort, plan-mode effort, and their own developer-instruction delta. The separate `promptlab` diagnostics profile changes summary/verbosity display controls without defining a model lane. They inherit `instructions/default.md`, `prompts/default-compact.md`, service tier, tools, MCP servers, permissions, features, UI settings, and unrelated defaults. A profile may override either absolute file path when a controlled eval supports a real lane-specific difference; duplicating identical paths in every profile would add configuration without changing behavior. The schema comment is editor metadata, not a duplicate runtime value.
 
-Named role selection requires `features.multi_agent_v2.hide_spawn_agent_metadata = false`. The GPT-5.6 endpoint reserves `collaboration.spawn_agent` with an exact hidden-metadata schema, so exposing role metadata under that namespace is rejected. `tool_namespace = "team"` gives the configured role-aware schema a non-reserved namespace; a strict live canary returned `PROFILE_OK`. Three concurrent V2 slots include the root, leaving two child slots. V1 retains `agents.max_threads = 3` and `agents.max_depth = 1`.
+## Prompt ownership and durable correction
 
-Current V2 source exposes spawn tools at every depth and does not enforce `agents.max_depth`. The shared prompt therefore imposes one-hop delegation: only root spawns, and children never spawn even when tools remain visible. Root owns Goal status, total outcome, integration, and verification; child reports are evidence, not proof.
+`instructions/default.md` is the shared execution contract. `prompts/default-compact.md` is the file-backed compaction contract. Role files contain only role deltas until a controlled eval justifies a profile-specific instruction or compaction variant.
 
-## Other feature decisions
+The contract now treats a complaint about recurring or model-inferred Codex behavior as a request to inspect the effective layers. When evidence supports a durable global fix, Codex should update the smallest owning file under `$CODEX_HOME`, validate the effective result, and report the change instead of requiring repeated prompt corrections. It must not turn a complaint into unrelated speculative cleanup.
 
-Stable broad side-effect surfaces remain task-scoped: `apps`, `computer_use`, `personality`, and `secret_auth_storage` stay off globally. `workspace_dependencies` stays on. Under-development features remain unforced. Catalog-controlled `code_mode_only` and multi-agent version metadata are not duplicated as global feature toggles.
+Routing is explicit:
 
-## Repository boundary
+- choose `hermes`, `hephaestus`, or `athena` by function;
+- never assume `task_name` selects the role;
+- use `fork_turns = "none"` for self-contained work;
+- use a small bounded turn count only when recent context is needed;
+- use `"all"` only for genuine continuation;
+- keep root plus at most two children and one delegation hop.
 
-This directory is a live Codex home. `.gitignore` is default-deny. Public candidates include the shared prompt, role config layers, `AGENTS.md`, `ARCHITECTURE.md`, documentation, rules, and validation scripts. Private `config.toml`, credentials, histories, databases, sessions, caches, installed plugins/skills, OAuth state, and host paths remain ignored.
+## Multi-agent V2 guard
 
-Before any commit, inspect:
+The live catalog selects V2 for Sol and Terra and V1 for Luna. Upstream issue `#31814` remains open as of 2026-07-12: hidden V2 spawn metadata can remove explicit `agent_type`, model, effort, and service-tier routing, while a full-history fork can multiply token use.
 
-```bash
-git ls-files --cached --others --exclude-standard
+The master config keeps:
+
+```toml
+[features.multi_agent_v2]
+max_concurrent_threads_per_session = 3
+tool_namespace = "team"
+hide_spawn_agent_metadata = false
 ```
 
-## Validation record
+The non-reserved `team` namespace was previously validated against the GPT-5.6 endpoint. The prompt-level `fork_turns` rule handles the separate full-history default. This is a workaround, not a permanent upstream guarantee; recheck it when `#31814` closes or CLI defaults change.
 
-The live runs below are the pre-optimization baseline that exposed the cost of standing high-effort and Ultra profiles; every run used `--strict-config`. After the usage rewrite, `python3 scripts/check-prompt-budgets.py` passes 267 checks, Python parses every TOML file, and `codex [--profile NAME] debug prompt-input` assembles the base and all six role layers without model inference. Codex 0.144.1 rejects `--strict-config` for its no-inference `features` and `debug` commands, so no unchanged live turns were spent merely to re-dogfood configuration. Live behavior of the new Luna/Sol ladder remains unverified.
+## Validation
 
-| Run | Acceptance result | Input / cached / output / reasoning tokens |
-| --- | --- | --- |
-| base lead, Sol medium | Returned exact `BASE_OK`; no tools. | 14,798 / 0 / 6 / 0 |
-| explorer, Terra low | Found the exact call path and percentage defect; no edit or artifact after the targeted fallback fix. | 45,977 / 36,096 / 663 / 51 |
-| worker, Terra medium | Changed only `src/pricing.py` with Python; target test and `git diff --check` passed. | 61,583 / 44,800 / 733 / 85 |
-| reviewer, Sol high | Found the bearer-token leak and missing assertion; no edits; ASCII severity labels after one targeted rerun. | 132,396 / 104,192 / 2,061 / 970 |
-| responder, Sol xhigh | Reproduced `None.strip`, compared the contract, changed only `src/headers.py`, and passed the original test. | 81,543 / 61,440 / 1,646 / 645 |
-| architect, Sol max | Chose request-scoped caching against every invariant; no edits and zero agent spawns. | 119,455 / 86,016 / 6,982 / 5,018 |
-| orchestrator, Sol ultra | Briefed explorer/reviewer/worker, used disjoint ownership, waited for all, changed one file, reconciled the security finding, and passed two root-run tests. | 484,200 / 447,232 / 6,406 / 3,498 at root |
+All configuration paths were validated after the rewrite:
 
-The Ultra state record confirms the exact configured children: explorer on Terra low, worker on Terra medium, and reviewer on Sol high. Their recorded token totals were 172,422, 85,630, and 71,749. No child created a descendant, confirming the prompt-enforced one-hop rule despite V2 exposing spawn tools. The root emitted a Brief, four completed waits, handoff acknowledgment, independent diff inspection, full-suite validation, and one synthesis.
+- Python `tomllib` parsed `config.toml`, all three model profiles, and `promptlab.config.toml`.
+- A deterministic contract audit confirmed the exact master model/effort, three functional profile files, three standalone Greek-deity agent files with required metadata, catalog-supported efforts, absence of the six legacy profiles, durable-correction and bounded-fork rules, Git allowlisting, and private-state ignores.
+- `codex doctor --json` reported `config.load: ok`, current CLI `0.144.1`, model `gpt-5.6-sol`, reachable provider endpoints, and a successful Responses WebSocket handshake. Its overall status was `fail` only because this noninteractive validation shell sets `TERM=dumb`.
+- `codex debug prompt-input` assembled the base plus `speed`, `build`, and `deep` profile layers. Standalone custom-agent discovery is validated separately from profile loading.
+- `codex exec --strict-config --ephemeral --sandbox read-only` completed a no-tool contract canary for every direct lane: `BASE_OK`, `SPEED_OK`, `BUILD_OK`, and `DEEP_OK`.
+- A fresh base session inspected its `spawn_agent` schema without calling tools and returned exactly `athena,hephaestus,hermes`, proving standalone custom-agent discovery after the split.
+- `git diff --check` passed. `git check-ignore -v` shows the three model profiles and `promptlab` are public source exceptions while the private master `config.toml` remains ignored.
 
-Two same-case prompt reruns demonstrate targeted regression repair rather than prompt accretion. Explorer dropped from 140,379 input tokens with two failed graph calls and cache artifacts to 45,977 with two direct reads and a clean tree. The first Goal continuation reached `complete` but used four commands and a shell text write; after strengthening Python-fu, the same Goal used one Python write/verification command, produced exact bytes `474f414c5f4f4b0a`, reached `complete`, and cleared in 17 seconds with 1,560 Goal-accounted tokens.
-
-The first role-aware V2 canary failed because the endpoint reserves `collaboration.spawn_agent` with an exact schema. Moving the visible-metadata tools to `team` returned `PROFILE_OK` and enabled the successful named-role Ultra run. These traces validate role boundaries and runtime composition; they are not a statistical claim that a higher effort always outperforms a lower one.
+The bounded configuration canaries used read-only sandboxes, no tools, and exact short replies. They prove current CLI composition and endpoint acceptance, not statistical superiority for arbitrary workloads. Re-tune efforts from observed repository outcomes rather than adding more standing profiles.
 
 ## Sources
 
-- [TeamSTEPPS pocket guide](../teamstepps3-pocket-guide.md)
-- [Using Goals in Codex](https://developers.openai.com/cookbook/examples/codex/using_goals_in_codex)
-- [GPT-5.6 prompt guidance](https://developers.openai.com/api/docs/guides/prompt-guidance-gpt-5p6)
-- [Codex AGENTS.md discovery](https://learn.chatgpt.com/docs/agent-configuration/agents-md#how-codex-discovers-guidance)
-- [Global versus repository guidance](https://learn.chatgpt.com/docs/customization/overview#when-to-update-agentsmd)
-- [Codex model selection](https://learn.chatgpt.com/docs/models)
-- [Codex usage limits](https://learn.chatgpt.com/docs/pricing#what-are-the-usage-limits-for-my-plan)
-- [OpenAI GPT-5.6 release](https://openai.com/index/gpt-5-6/)
-- [Artificial Analysis GPT-5.6 benchmarks](https://artificialanalysis.ai/articles/gpt-5-6-has-landed)
-- [Codex subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents)
-- [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference)
-- [Codex base instructions](https://github.com/openai/codex/blob/dc5ae378967cff0de2cfb30b98c52047ab978e3d/codex-rs/protocol/src/prompts/base_instructions/default.md)
-- [Codex feature registry](https://github.com/openai/codex/blob/dc5ae378967cff0de2cfb30b98c52047ab978e3d/codex-rs/features/src/lib.rs)
-- [Current Goal tool definitions](https://github.com/openai/codex/blob/656a2d0905c9e0b9bdade1badab07ef6d42ca17c/codex-rs/ext/goal/src/spec.rs)
-- [Current Goal statuses and client API](https://github.com/openai/codex/blob/656a2d0905c9e0b9bdade1badab07ef6d42ca17c/codex-rs/app-server-protocol/src/protocol/v2/thread.rs)
+Official:
+
+- [Codex models](https://learn.chatgpt.com/docs/models)
+- [Codex configuration profiles](https://learn.chatgpt.com/docs/config-file/config-advanced#profiles)
+- [Codex configuration reference](https://learn.chatgpt.com/docs/config-file/config-reference#configtoml)
+- [Codex custom agents](https://learn.chatgpt.com/docs/agent-configuration/subagents#custom-agents)
+- [Codex subagent model and reasoning guidance](https://learn.chatgpt.com/docs/agent-configuration/subagents#choosing-models-and-reasoning)
+- [OpenAI Codex issue #31814](https://github.com/openai/codex/issues/31814)
+
+Local source studies:
+
+- [`docs/codex/studies/config-layer-stack-runtime-study.md`](../codex/studies/config-layer-stack-runtime-study.md)
+- [`docs/codex/studies/reasoning-effort-selection-runtime-study.md`](../codex/studies/reasoning-effort-selection-runtime-study.md)
+- [`docs/codex/studies/subagent-spawn-role-runtime-study.md`](../codex/studies/subagent-spawn-role-runtime-study.md)
+- [`docs/codex/studies/model-instructions-request-lowering-study.md`](../codex/studies/model-instructions-request-lowering-study.md)
+
+Community sample:
+
+- [Sol/Terra/Luna early workflow guide](https://www.reddit.com/r/codex/comments/1utzi5w/gpt56_sol_vs_terra_vs_luna_my_early_guide_to/)
+- [Sol medium main-driver discussion](https://www.reddit.com/r/codex/comments/1utuzrr/sol_medium_as_a_main_driver_tibos_recommendations/)
+- [Luna max versus Sol medium discussion](https://www.reddit.com/r/codex/comments/1utrmty/luna_max_instead_of_sol_medium/)
+- [Sol high default discussion](https://www.reddit.com/r/codex/comments/1us1d53/i_believe_sol_high_should_be_your_default_now/)
+- [GPT-5.6 token-use and V2 routing report](https://www.reddit.com/r/codex/comments/1utumqd/for_anyone_experiencing_unusually_high_token/)

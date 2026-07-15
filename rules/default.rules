@@ -121,10 +121,13 @@ allow(["eslint"], "ESLint checks are approved.")
 allow(["prettier"], "Prettier formatting is approved.")
 allow(["tsc"], "TypeScript type checking is approved.")
 
-# Dependency, toolchain, and registry mutation.
+# Dependency manifests and local lockfiles are normal development edits.
 for manager in ["npm", "pnpm", "bun"]:
-    for action in ["install", "add", "remove", "uninstall", "update", "link", "unlink", "publish"]:
-        prompt([manager, action], "Dependency or registry mutation requires current user approval.")
+    for action in ["install", "add", "remove", "uninstall", "update", "link", "unlink"]:
+        allow([manager, action], "Project dependency and lockfile updates are approved.")
+    prompt([manager, "publish"], "Publishing to a package registry requires current user approval.")
+for manager in ["npm", "pnpm", "bun"]:
+    prompt([manager, ["install", "add"], ["-g", "--global"]], "Global package installation requires current user approval.")
 prompt(["npm", "deprecate"], "Changing published package metadata requires current user approval.")
 prompt(["pnpm", "deploy"], "Creating a deployment bundle requires current user approval.")
 for action in ["add", "remove", "install", "uninstall", "update", "publish", "yank"]:
@@ -144,12 +147,22 @@ prompt(["dotnet", "nuget", ["push", "delete"]], "NuGet registry mutation require
 allow(["brew", ["info", "list", "search", "outdated"]], "Homebrew inspection is approved.")
 prompt(["brew", ["install", "uninstall", "upgrade", "update", "tap", "untap", "services"]], "System package or service mutation requires current user approval.")
 
-# Git inspection and local editing are approved; history and publication mutations prompt.
+# Git inspection, normal history creation, and fast-forward publication are approved.
+# Destructive recovery, forced publication, and deletion forms remain guarded.
 allow(["git"], "Git inspection, staging, fetching, and working-tree edits are approved. Specific prompt rules below take precedence.")
-for action in ["commit", "push", "merge", "rebase", "reset", "restore", "checkout", "switch", "cherry-pick", "revert", "am", "notes", "replace", "update-ref"]:
-    prompt(["git", action], "Git history or branch state mutation requires current user approval.")
-prompt(["git", "push"], "Publishing Git refs requires current user approval.", match = ["git push", "git push origin main"], not_match = ["git status"])
-prompt(["git", "tag"], "Creating, changing, or deleting Git tags requires current user approval.")
+for action in ["commit", "merge", "rebase", "cherry-pick", "revert", "am"]:
+    allow(["git", action], "Normal local Git history creation is approved.")
+allow(["git", "push"], "Normal Git ref publication is approved; force and deletion forms prompt below.")
+allow(["git", "tag"], "Normal Git tag creation is approved; replacement and deletion forms prompt below.")
+prompt(["git", "commit", "--amend"], "Amending published or shared history requires current user approval.")
+for flag in ["--force", "-f", "--force-with-lease", "--force-if-includes", "--delete", "-d"]:
+    prompt(["git", "push", flag], "Forced or deleting Git publication requires current user approval.")
+    for remote in ["origin", "upstream"]:
+        prompt(["git", "push", remote, flag], "Forced or deleting Git publication requires current user approval.")
+for flag in ["--force", "-f", "--delete", "-d"]:
+    prompt(["git", "tag", flag], "Replacing or deleting a Git tag requires current user approval.")
+for action in ["reset", "restore", "checkout", "switch", "notes", "replace", "update-ref"]:
+    prompt(["git", action], "This Git operation can replace working-tree or ref state and requires current user approval.")
 prompt(["git", "clean"], "Deleting untracked files requires current user approval.")
 prompt(["git", "config"], "Changing Git configuration or identity requires current user approval.")
 prompt(["git", "branch", ["-d", "-D", "-m", "-M"]], "Deleting or renaming a branch requires current user approval.")
@@ -163,16 +176,24 @@ prompt(["git", "lfs", ["push", "lock", "unlock", "prune"]], "Publishing or delet
 
 # GitHub reads are approved; remote writes prompt.
 allow(["gh"], "GitHub inspection is approved. Specific prompt rules below take precedence.")
-prompt(["gh", "api"], "GitHub API requests can mutate remote state; current user approval is required.")
+allow(["gh", "api"], "Read-only GitHub API inspection is approved. Explicit write and upload forms prompt below.")
+for flag in ["-X", "--method", "-f", "--raw-field", "-F", "--field", "--input"]:
+    prompt(["gh", "api", flag], "GitHub API writes, uploads, or request bodies require current user approval.")
 prompt(["gh", "pr", ["create", "merge", "close", "reopen", "edit", "review", "comment", "ready"]], "Changing pull-request state requires current user approval.")
 prompt(["gh", "issue", ["create", "close", "reopen", "edit", "comment", "delete"]], "Changing issue state requires current user approval.")
-prompt(["gh", "release"], "Changing release state requires current user approval.")
+allow(["gh", "release", ["create", "upload", "edit"]], "Creating and updating GitHub releases is approved.")
+prompt(["gh", "release", ["delete", "delete-asset"]], "Deleting GitHub releases or assets requires current user approval.")
 prompt(["gh", "repo", ["create", "delete", "fork", "archive", "rename", "edit"]], "Changing repository state requires current user approval.")
-prompt(["gh", "workflow", ["run", "enable", "disable"]], "Changing or dispatching workflow state requires current user approval.")
-prompt(["gh", "run", ["rerun", "cancel", "delete"]], "Changing workflow-run state requires current user approval.")
+allow(["gh", "workflow", "run"], "Dispatching an existing GitHub workflow is approved.")
+prompt(["gh", "workflow", ["enable", "disable"]], "Changing workflow availability requires current user approval.")
+allow(["gh", "run", ["rerun", "cancel"]], "Rerunning or cancelling a GitHub workflow is approved.")
+prompt(["gh", "run", "delete"], "Deleting workflow-run history requires current user approval.")
 prompt(["gh", "secret"], "Changing or reading repository secrets requires current user approval.")
 prompt(["gh", "variable"], "Changing repository variables requires current user approval.")
-prompt(["gh", "auth"], "Changing GitHub authentication requires current user approval.")
+allow(["gh", "auth", "status"], "Read-only GitHub authentication status inspection is approved.")
+for action in ["login", "logout", "refresh", "setup-git", "switch"]:
+    prompt(["gh", "auth", action], "Changing GitHub authentication requires current user approval.")
+prompt(["gh", "auth", "token"], "Reading an authentication token can expose a credential; current user approval is required.")
 prompt(["gh", "cache", "delete"], "Deleting GitHub Actions caches requires current user approval.")
 prompt(["gh", "gist", ["create", "edit", "delete"]], "Changing gist state requires current user approval.")
 prompt(["gh", "label", ["create", "edit", "delete", "clone"]], "Changing label state requires current user approval.")

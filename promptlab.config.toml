@@ -1,0 +1,10 @@
+#:schema https://developers.openai.com/codex/config-schema.json
+
+# Diagnostic profile for controlled prompt experiments. Detailed summaries are
+# model-generated diagnostics, not private chain-of-thought. Raw reasoning is
+# displayed only when the selected model/provider emits it.
+model_reasoning_summary = "detailed"
+model_verbosity = "high"
+hide_agent_reasoning = false
+show_raw_agent_reasoning = true
+developer_instructions = "Evaluation lane: preserve the frozen task and scoring contract, expose available reasoning diagnostics, and separate observed output from inference about model behavior. Do not treat summaries as complete or authoritative chain-of-thought."

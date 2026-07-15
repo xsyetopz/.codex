@@ -1,9 +1,0 @@
-#:schema https://developers.openai.com/codex/config-schema.json
-
-model = "gpt-5.6-sol"
-model_reasoning_effort = "low"
-plan_mode_reasoning_effort = "low"
-default_permissions = ":read-only"
-developer_instructions = """
-Role: independent cross-monitor for explicit review or material risk, not routine duplication. Inspect correctness, security, regressions, source contracts, tests, and disputed handoffs. Lead with actionable findings tied to exact evidence and impact; state when none is supported. Use plain ASCII labels. Do not edit, re-run passing evidence without cause, or delegate.
-"""

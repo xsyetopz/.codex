@@ -1,57 +1,36 @@
 #:schema https://developers.openai.com/codex/config-schema.json
-# https://developers.openai.com/codex/config-reference
+# Copy to ~/.codex/config.toml, then replace optional paths and preferences.
+# Keep credentials, project trust entries, hook trust hashes, and host-specific
+# notification commands in the private config.toml only.
 
-approval_policy = { granular = { sandbox_approval = true, rules = true, mcp_elicitations = true, request_permissions = true, skill_approval = false } }
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
 allow_login_shell = false
 
-model = "gpt-5.6-luna"
+model = "gpt-5.6-sol"
 review_model = "gpt-5.6-sol"
-model_reasoning_effort = "low"
+model_reasoning_effort = "medium"
 model_reasoning_summary = "concise"
 model_verbosity = "low"
-model_instructions_file = "~/.codex/model-instructions.md"
+model_instructions_file = "~/.codex/instructions/default.md"
 developer_instructions = """
 Default role: usage-conscious engineering lead and integration owner. Own the outcome, root Goal lifecycle, cheapest adequate role selection, integration, and final validation. Work alone by default; delegate only under the shared coordination contract, and verify role reports before adopting them.
 """
-compact_prompt = """
-Role: Compress conversation state for reliable continuation.
-
-Personality: Neutral, exact, and non-narrative.
-
-Goal: Preserve the minimum state needed to resume without re-discovery.
-
-Success criteria:
-- Keep the request or persisted Goal, scope, evidence, decisions, ownership, changed paths, validation, risks, blockers, and next action.
-- Preserve exact errors, IDs, dates, models, profiles, efforts, and unknown or stale status when material.
-
-Constraints:
-- Exclude secrets, filler, tool chatter, stale hypotheses, repeated plans, and irrelevant logs.
-- Do not solve the task or invent progress.
-
-Tools: Use only existing conversation state; make no calls.
-
-Output: Return compact Markdown ordered by objective, work state, evidence, and next action.
-
-Stop rules: Stop when required continuation state is preserved once without repetition.
-"""
+experimental_compact_prompt_file = "~/.codex/prompts/default-compact.md"
 personality = "none"
-plan_mode_reasoning_effort = "low"
+plan_mode_reasoning_effort = "medium"
 service_tier = "flex"
 web_search = "live"
-project_doc_max_bytes = 32768
+
+project_doc_max_bytes = 12288
+tool_output_token_limit = 8000
+
 default_permissions = ":danger-full-access"
 cli_auth_credentials_store = "keyring"
 analytics.enabled = false
 hide_agent_reasoning = true
 file_opener = "cursor"
 disable_paste_burst = true
-
-notify = [
-    "~/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient",
-    "turn-ended",
-    "--previous-notify",
-    "[\"bash\",\"-lc\",\"afplay \\/System\\/Library\\/Sounds\\/Submarine.aiff\"]",
-]
 
 [permissions.project-edit]
 description = "Edit workspace roots, deny secret files, and allow network access."
@@ -67,25 +46,9 @@ extends = ":workspace"
 enabled = true
 
 [agents]
-job_max_runtime_seconds = 900
 max_threads = 3
 max_depth = 1
-
-[agents.explorer]
-description = "Lowest-cost read-only explorer for one explicit, bounded evidence lookup the root cannot answer directly."
-config_file = "./explorer.config.toml"
-
-[agents.worker]
-description = "Low-cost implementation worker for one explicit, disjoint code slice with targeted validation."
-config_file = "./worker.config.toml"
-
-[agents.reviewer]
-description = "Independent reviewer for explicit or materially risky correctness, security, contract, and test checks."
-config_file = "./reviewer.config.toml"
-
-[agents.responder]
-description = "Sol escalation for reproduced failures or conflicts that survived a cheaper evidence-backed attempt."
-config_file = "./responder.config.toml"
+interrupt_message = false
 
 [features]
 fast_mode = false
@@ -98,15 +61,10 @@ apps = false
 secret_auth_storage = false
 workspace_dependencies = true
 
-# The live GPT-5.6 catalog selects the multi-agent version. This table exposes
-# named-role metadata and fixes the V2 slot shape without forcing V2 on.
 [features.multi_agent_v2]
 max_concurrent_threads_per_session = 3
 tool_namespace = "team"
 hide_spawn_agent_metadata = false
-
-# Keep unfinished duplicate selectors and globally broad tool surfaces off; see
-# docs/references/gpt-5.6-harness.md.
 
 [plugins."github@openai-curated"]
 enabled = false
@@ -180,11 +138,13 @@ exclude = [
 ]
 set = { CODEX_HOME = "~/.codex", PATH = "~/.local/bin:~/.bun/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin" }
 
+# Optional graph-backed repository discovery. Missing installation does not
+# prevent startup; set required = true after installing the binary.
 [mcp_servers.codebase-memory-mcp]
 command = "~/.local/bin/codebase-memory-mcp"
 startup_timeout_sec = 30
 tool_timeout_sec = 120
-required = true
+required = false
 enabled_tools = [
     "get_architecture",
     "get_code_snippet",
@@ -235,10 +195,9 @@ approval_mode = "approve"
 
 [mcp_servers.openaiDeveloperDocs]
 url = "https://developers.openai.com/mcp"
-# <<< codebase-memory-mcp SessionStart <<<
 
 [notice]
-hide_rate_limit_model_nudge = false
+hide_rate_limit_model_nudge = true
 
 [notice.model_migrations]
 "gpt-5.5" = "gpt-5.6-sol"
@@ -251,11 +210,4 @@ persistence = "save-all"
 max_bytes = 268435456
 
 [tools]
-web_search = { context_size = "high", location = { country = "EE", city = "Tallinn", timezone = "Europe/Tallinn" } }
-
-[desktop]
-conversationDetailMode = "STEPS_PROSE"
-sansFontSize = 14
-codeFontSize = 13
-ambient-suggestions-enabled = false
-followUpQueueMode = "queue"
+web_search = { context_size = "high" }
