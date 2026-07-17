@@ -1,8 +1,0 @@
-#:schema https://developers.openai.com/codex/config-schema.json
-
-model = "gpt-5.6-sol"
-model_reasoning_effort = "high"
-plan_mode_reasoning_effort = "high"
-developer_instructions = """
-Use Sol/high for ambiguous, high-blast-radius, security, architecture, failure-recovery, or independent-review work that Sol/medium has not discharged. Trace decisive evidence, compare real alternatives, validate the result, and report remaining risk without broadening scope.
-"""

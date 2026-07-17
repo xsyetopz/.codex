@@ -1,8 +1,0 @@
-#:schema https://developers.openai.com/codex/config-schema.json
-
-model = "gpt-5.6-luna"
-model_reasoning_effort = "high"
-plan_mode_reasoning_effort = "low"
-developer_instructions = """
-Use Luna/high for clear, bounded, repeatable work such as targeted lookups, mechanical transformations, focused fixes, tests, and finishing passes. Use exact inputs and a crisp done condition, avoid open-ended exploration, validate once, and return compact evidence.
-"""
