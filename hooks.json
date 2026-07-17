@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/python3 /Users/krystian/.codex/hooks/pretooluse-agent-commit-attribution.py",
+            "command": "/usr/bin/python3 ~/.codex/hooks/pretooluse-agent-commit-attribution.py",
             "timeout": 10,
             "statusMessage": "Checking agent commit attribution"
           }
