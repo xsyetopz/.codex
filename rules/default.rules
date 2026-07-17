@@ -92,6 +92,7 @@ forbid(["mkfs"], "Filesystem formatting is blocked. Use a disposable image or sa
 # Language runtimes, builds, tests, and local formatting.
 allow(["python3"], "Python development commands are approved.")
 allow(["node"], "Node.js development commands are approved.")
+allow(["deno"], "Deno development commands are approved.")
 allow(["bun"], "Bun development commands are approved. Specific prompt rules below take precedence.")
 allow(["npm"], "npm development commands are approved. Specific prompt rules below take precedence.")
 allow(["pnpm"], "pnpm development commands are approved. Specific prompt rules below take precedence.")
